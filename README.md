@@ -61,11 +61,11 @@ One reliable way to verify the pinout is by measuring voltage levels with a mult
 
 I think there is no device on the bus, so maybe we need to experiment some more with the bus
 
-| Over Vires    |  Measured Voltage  |
-| ------------- | ------------------ |
-| Black ↔ Gray  | \~0V DC            |
-| Blue  ↔ Black | \~2.352V DC        |
-| Blue  ↔ Gray  | \~2.25V DC         |
-| White ↔ Black | \~0V DC            |
-| White ↔ Gray  | \~0V               |
-| Brown ↔ Black | \~0V               |
+| Over Vires    |  Measured Voltage  | Guesses after measurements |
+| ------------- | ------------------ |                            |
+| Black ↔ Gray  | \~0V DC            |                            |
+| Blue  ↔ Black | \~2.352V DC        |                            |
+| Blue  ↔ Gray  | \~2.25V DC         |                            |
+| White ↔ Black | \~0V DC            |                            |
+| White ↔ Gray  | \~1V               |                            |
+| Brown ↔ Black | \~0V               |                            |

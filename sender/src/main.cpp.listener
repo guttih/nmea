@@ -1,0 +1,58 @@
+// listener
+#include <SPI.h>
+#include <mcp_can.h>
+
+// Your wiring
+#define CAN_INT     4   // MCP2515 INT  (GPIO4)
+#define CAN_CS     10   // MCP2515 CS   (GPIO10)
+#define SPI_MOSI   11   // MCP2515 SI   (GPIO11)
+#define SPI_MISO   13   // MCP2515 SO   (GPIO13)
+#define SPI_SCK    12   // MCP2515 SCK  (GPIO12)
+
+MCP_CAN CAN0(CAN_CS);  // Create CAN controller instance
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial);  // Wait for serial monitor
+
+  pinMode(CAN_INT, INPUT);
+  SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, CAN_CS);
+
+  Serial.println("Initializing CAN listener...");
+
+  // Start MCP2515 with 8MHz crystal and 500kbps bitrate
+  if (CAN0.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
+    Serial.println("CAN init OK");
+  } else {
+    Serial.println("CAN init FAILED");
+    while (1);  // Stop here
+  }
+
+  CAN0.setMode(MCP_NORMAL);  // Normal mode for receiving real traffic
+
+  Serial.println("CAN Listener Ready");
+}
+
+void loop() {
+  if (!digitalRead(CAN_INT)) {
+    long unsigned int rxId;
+    byte len = 0;
+    byte rxBuf[8];
+
+    CAN0.readMsgBuf(&rxId, &len, rxBuf);  // Read received message
+
+    Serial.print("Received ID: 0x");
+    Serial.print(rxId, HEX);
+    Serial.print(" Length: ");
+    Serial.print(len);
+    Serial.print(" Data: ");
+
+    for (byte i = 0; i < len; i++) {
+      if (rxBuf[i] < 0x10) Serial.print("0");  // Leading zero
+      Serial.print(rxBuf[i], HEX);
+      Serial.print(" ");
+    }
+
+    Serial.println();
+  }
+}

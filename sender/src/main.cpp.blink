@@ -1,0 +1,52 @@
+#include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
+#include <SPI.h>
+#include <mcp_can.h>
+#include <NMEA2000_CAN.h>
+#include <N2kMessages.h>
+
+// Pin definitions — adjust to your wiring
+#define N2k_SPI_CS_PIN    5
+#define N2k_CAN_INT_PIN   4
+
+// Create NMEA2000 object for MCP2515
+tNMEA2000_mcp NMEA2000(N2k_SPI_CS_PIN, MCP_16MHz, N2k_CAN_INT_PIN);
+
+#define NUMPIXELS 1  // Only one RGB pixel
+
+Adafruit_NeoPixel pixel(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+
+// Callback to handle incoming RPM PGN (127488)
+void HandleEngineSpeed(tN2kMsg &N2kMsg) {
+  double rpm;
+  uint8_t instance;
+  if (ParseN2kEngineParamRapid(N2kMsg, instance, rpm)) {
+    Serial.printf("👂 Engine %d RPM: %.2f\n", instance, rpm);
+  }
+}
+
+// Generic callback for any PGN – prints raw PGN and length
+void HandleAllPGNs(tN2kMsg &N2kMsg) {
+  Serial.printf("🌐 PGN %lu, len=%d\n", N2kMsg.PGN, N2kMsg.DataLen);
+}
+
+
+
+
+void ledColor(uint8_t r, uint8_t g, uint8_t b, uint32_t waitMillis=1000) {
+  pixel.setPixelColor(0, pixel.Color(r, g, b));
+  pixel.show();
+  delay(waitMillis);
+}
+
+void setup() {
+  pixel.begin();
+  pixel.setBrightness(50);  // Optional: between 0-255
+}
+
+
+void loop() {
+  ledColor(0, 10, 0); // Green
+  ledColor(0, 0, 0);     // Off
+}

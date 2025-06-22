@@ -1,0 +1,42 @@
+// test temperature
+
+#include <Arduino.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// GPIO where the DS18B20 signal wire is connected to
+const int oneWireBus = 21;     
+
+// Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(oneWireBus);
+
+// Pass our oneWire reference to Dallas Temperature sensor 
+DallasTemperature sensors(&oneWire);
+
+unsigned long startMillis = 0;
+void setup() {
+  // Start the Serial Monitor
+  Serial.begin(115200);
+  // Start the DS18B20 sensor
+  sensors.begin();
+  
+  Serial.println("\n Celsius   ---  Fahrenheit");
+}
+void log(long time, String message) {
+  Serial.printf("[%ld] %s\n", time, message.c_str());
+}
+void loop() {
+    startMillis = millis();
+    log(startMillis, "Requesting temperatures...");
+    sensors.requestTemperatures(); 
+    log(millis()-startMillis, "Fetcing units...");
+    startMillis = millis();
+    float temperatureC = sensors.getTempCByIndex(0);
+    float temperatureF = sensors.getTempFByIndex(0);
+    log(millis()-startMillis, "Fetched units");
+    Serial.print(temperatureC);
+    Serial.print(" °C   ---   ");
+    Serial.print(temperatureF);
+    Serial.println(" °F");
+    delay(1000);
+}

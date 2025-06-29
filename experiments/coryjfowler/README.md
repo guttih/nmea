@@ -28,6 +28,11 @@ And on each MCP2515 module we short the jumper J1 to connect the 120 Ω termin
 > **Note:** `G04` (INT) is **only connected on the receiver ESP32**, where it is used to detect and handle incoming CAN messages via interrupt.  
 > The sender ESP32 does **not** need this connection.
 
+| Esp32 Pin  | Resistor4.7kΩ | DS18B20 Wires | Description       |
+| ---------- | ------------- |---------------|-------------------|
+|  3V3       | -             | RED    wire   | Power supply (5V) |
+|  GND       | Side B        | GREEN  wire   | Ground            |
+|  G14       | Side A        | YELLOW wire   | Data              |
 
 ### Wiring Diagram
 
@@ -60,7 +65,21 @@ And on each MCP2515 module we short the jumper J1 to connect the 120 Ω termin
  ║           GND-╟─────────╢- GND         *J1 -╟──┘  
  ╚═══════════════╝         ╚═══════════════════╝
 
- 
+---- Connecting The DS18B20 Temperature Sensor ----
+
+ ╔═══════════╗                        ╔═══════════╗
+ ║   ESP32   ║                        ║  DS18B20  ║
+ ║           ║                        ║  Sensor   ║
+ ║           ║                        ║           ║
+ ║    GND   -╟────────────────────────╢-  Green  -║
+ ║    3V3   -╟──┬─────────────────────╢-   Red   -║
+ ║           ║  │  ╔═══════════╗      ║           ║
+ ║           ║  │  ║-Resistor -║      ║           ║
+ ║           ║  └──╢-  4.7kΩ  -╟──┬───╢- Yellow  -║
+ ║           ║     ╚═══════════╝  │   ╚═══════════╝
+ ║    G12   -╟────────────────────┘
+ ╚═══════════╝
+
 
 ```
 
